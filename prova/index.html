@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora Financeira</title>
+<title>Calculadora Financeira Completa</title>
 
 <style>
     body {
@@ -58,10 +58,11 @@
 </head>
 <body>
 
-<h1>Calcular PE/RENT/LUCRA/MKP</h1>
+<h1>Calculadora Financeira</h1>
 
 <div class="container">
 
+    <h3>🔹 Ponto de Equilíbrio</h3>
     <label>Custo Fixo (R$)</label>
     <input type="number" id="custoFixo" placeholder="Ex: 5000">
 
@@ -70,6 +71,8 @@
 
     <label>Custo Variável por Unidade (R$)</label>
     <input type="number" id="custoVariavel" placeholder="Ex: 60">
+
+    <br><h3>🔹 Rentabilidade e Lucratividade</h3>
 
     <label>Lucro Obtido (R$)</label>
     <input type="number" id="lucro" placeholder="Ex: 3000">
@@ -80,6 +83,20 @@
     <label>Investimento (R$)</label>
     <input type="number" id="investimento" placeholder="Ex: 8000">
 
+    <br><h3>🔹 Markup</h3>
+
+    <label>Despesas Fixas (%)</label>
+    <input type="number" id="df" placeholder="Ex: 10">
+
+    <label>Despesas Variáveis (%)</label>
+    <input type="number" id="dv" placeholder="Ex: 15">
+
+    <label>Margem de Lucro Desejada (%)</label>
+    <input type="number" id="ml" placeholder="Ex: 20">
+
+    <label>Gasto Total em Dinheiro (Custo do Produto - R$)</label>
+    <input type="number" id="gastoDinheiro" placeholder="Ex: 50">
+
     <button onclick="calcular()">Calcular</button>
 
     <div class="result" id="resultado"></div>
@@ -87,32 +104,48 @@
 
 <script>
 function calcular() {
+    // -------- PONTO DE EQUILÍBRIO --------
     let custoFixo = parseFloat(document.getElementById("custoFixo").value);
     let precoVenda = parseFloat(document.getElementById("precoVenda").value);
     let custoVariavel = parseFloat(document.getElementById("custoVariavel").value);
+
+    let margemContribuicao = precoVenda - custoVariavel;
+    let pontoEquilibrioBruto = custoFixo / margemContribuicao;
+
+    // Arredondar para baixo com 1 casa decimal
+    let pontoEquilibrio = Math.floor(pontoEquilibrioBruto * 10) / 10;
+
+    // -------- RENTABILIDADE / LUCRATIVIDADE --------
     let lucro = parseFloat(document.getElementById("lucro").value);
     let receita = parseFloat(document.getElementById("receita").value);
     let investimento = parseFloat(document.getElementById("investimento").value);
 
-    // Ponto de Equilíbrio
-    let margemContribuicao = precoVenda - custoVariavel;
-    let pontoEquilibrioBruto = custoFixo / margemContribuicao;
-    let pontoEquilibrio = Math.floor(pontoEquilibrioBruto * 10) / 10;
-
-    // Rentabilidade
     let rentabilidade = (lucro / investimento) * 100;
-
-    // Lucratividade
     let lucratividade = (lucro / receita) * 100;
 
-    // Markup
-    let markup = (precoVenda / custoVariavel) * 100;
+    // -------- MARKUP (DF + DV + ML) --------
+    let df = parseFloat(document.getElementById("df").value);
+    let dv = parseFloat(document.getElementById("dv").value);
+    let ml = parseFloat(document.getElementById("ml").value);
+    let gastoDinheiro = parseFloat(document.getElementById("gastoDinheiro").value);
 
+    // Fórmula pedida
+    let markupDivisor = 100 / (100 - (df + dv + ml));
+
+    // Preço sugerido
+    let precoFinalMarkup = markupDivisor * gastoDinheiro;
+
+    // Markup percentual equivalente
+    let markupPercentual = (markupDivisor - 1) * 100;
+
+    // -------- EXIBIR RESULTADOS --------
     document.getElementById("resultado").innerHTML = `
-        <strong>Ponto de Equilíbrio:</strong> ${pontoEquilibrio.toFixed(0)} unidades<br>
+        <h3>Resultados</h3>
+
+        <strong>Ponto de Equilíbrio:</strong> ${pontoEquilibrio.toFixed(0)} unidades<br><br>
         <strong>Rentabilidade:</strong> ${rentabilidade.toFixed(2)}%<br>
-        <strong>Lucratividade:</strong> ${lucratividade.toFixed(2)}%<br>
-        <strong>Markup:</strong> ${markup.toFixed(2)}%
+        <strong>Lucratividade:</strong> ${lucratividade.toFixed(2)}%<br><br>
+        <strong>Preço Final Sugerido:</strong> R$ ${precoFinalMarkup.toFixed(2)}<br>
     `;
 }
 </script>
