@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Financeira</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #ccc;
+    }
+    label {
+        font-weight: bold;
+    }
+    input {
+        width: 100%;
+        padding: 8px;
+        margin: 8px 0 15px;
+        border-radius: 5px;
+        border: 1px solid #aaa;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #0056b3;
+    }
+    .result {
+        background: #e7f3ff;
+        border-left: 4px solid #007bff;
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Calcular PE/RENT/LUCRA/MKP</h1>
+
+<div class="container">
+
+    <label>Custo Fixo (R$)</label>
+    <input type="number" id="custoFixo" placeholder="Ex: 5000">
+
+    <label>Preço de Venda (R$)</label>
+    <input type="number" id="precoVenda" placeholder="Ex: 150">
+
+    <label>Custo Variável por Unidade (R$)</label>
+    <input type="number" id="custoVariavel" placeholder="Ex: 60">
+
+    <label>Lucro Obtido (R$)</label>
+    <input type="number" id="lucro" placeholder="Ex: 3000">
+
+    <label>Receita Total (R$)</label>
+    <input type="number" id="receita" placeholder="Ex: 12000">
+
+    <label>Investimento (R$)</label>
+    <input type="number" id="investimento" placeholder="Ex: 8000">
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div class="result" id="resultado"></div>
+</div>
+
+<script>
+function calcular() {
+    let custoFixo = parseFloat(document.getElementById("custoFixo").value);
+    let precoVenda = parseFloat(document.getElementById("precoVenda").value);
+    let custoVariavel = parseFloat(document.getElementById("custoVariavel").value);
+    let lucro = parseFloat(document.getElementById("lucro").value);
+    let receita = parseFloat(document.getElementById("receita").value);
+    let investimento = parseFloat(document.getElementById("investimento").value);
+
+    // Ponto de Equilíbrio
+    let margemContribuicao = precoVenda - custoVariavel;
+    let pontoEquilibrioBruto = custoFixo / margemContribuicao;
+    let pontoEquilibrio = Math.floor(pontoEquilibrioBruto * 10) / 10;
+
+    // Rentabilidade
+    let rentabilidade = (lucro / investimento) * 100;
+
+    // Lucratividade
+    let lucratividade = (lucro / receita) * 100;
+
+    // Markup
+    let markup = (precoVenda / custoVariavel) * 100;
+
+    document.getElementById("resultado").innerHTML = `
+        <strong>Ponto de Equilíbrio:</strong> ${pontoEquilibrio.toFixed(0)} unidades<br>
+        <strong>Rentabilidade:</strong> ${rentabilidade.toFixed(2)}%<br>
+        <strong>Lucratividade:</strong> ${lucratividade.toFixed(2)}%<br>
+        <strong>Markup:</strong> ${markup.toFixed(2)}%
+    `;
+}
+</script>
+
+</body>
+</html>
